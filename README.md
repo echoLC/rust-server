@@ -4,7 +4,7 @@ A http server in Rust.
 
 ## TODO
 
-- [ ] http-server module
+- [x] http-server module
 
 - [ ] router module
 
