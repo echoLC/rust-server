@@ -1,6 +1,6 @@
 # rust-server
 
-A web server framework for rust.
+A http server in Rust.
 
 ## TODO
 
