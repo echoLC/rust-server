@@ -5,7 +5,7 @@ use std::fs;
 use std::thread;
 use std::time::Duration;
 
-use rust_server::ThreadPool;
+use rust_server::server::thread_pool::ThreadPool;
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();

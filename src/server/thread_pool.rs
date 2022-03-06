@@ -2,8 +2,8 @@ use std::sync::mpsc;
 use std::sync::Arc;
 use std::sync::Mutex;
 
-use super::worker::{Worker};
-use super::message::{Message};
+use crate::server::worker::{Worker};
+use crate::server::message::{Message};
 
 pub struct ThreadPool {
   workers: Vec<Worker>,
