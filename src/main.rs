@@ -6,6 +6,7 @@ use std::thread;
 use std::time::Duration;
 
 use rust_server::server::thread_pool::ThreadPool;
+use rust_server::server::error::{ServerError};
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
@@ -15,17 +16,20 @@ fn main() {
         let stream = stream.unwrap();
 
         pool.execute(|| {
-            handle_connection(stream);
+            match handle_connection(stream) {
+                Err(error) => print!("Server error {}", error.message),
+                _ => ()
+            };
         })
     }
 
     println!("Shutting down.");
 }
 
-fn handle_connection (mut stream: TcpStream) {
+fn handle_connection (mut stream: TcpStream) -> Result<(), ServerError> {
     let mut buffer = [0; 1024];
 
-    stream.read(&mut buffer).unwrap();
+    stream.read(&mut buffer)?;
 
     println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
 
@@ -40,10 +44,12 @@ fn handle_connection (mut stream: TcpStream) {
     } else {
         ("HTTP/1.1 404 NOT FOUND", "404.html")
     };
-    let contents = fs::read_to_string(filename).unwrap();
+    let contents = fs::read_to_string(filename)?;
     let response = format!("{}\r\nContent-length: {}\r\n\r\n{}", status_line, contents.len(), contents);
 
-    stream.write(response.as_bytes()).unwrap();
+    stream.write(response.as_bytes())?;
 
-    stream.flush().unwrap();
+    stream.flush()?;
+
+    Ok(())
 }
