@@ -1,9 +1,12 @@
 use std::fmt;
 use std::io;
+use std::sync::mpsc::SendError;
+use crate::server::message::{Message};
 
 pub enum ErrorKind {
   Route,
-  File
+  File,
+  Sync
 }
 
 pub struct ServerError {
@@ -35,6 +38,12 @@ impl fmt::Debug for ServerError {
 impl From<io::Error> for ServerError {
     fn from(error: io::Error) -> Self {
       ServerError { code: 1, message: error.to_string(), kind: ErrorKind::File }
+    }
+}
+
+impl From<SendError<Message>> for ServerError {
+    fn from (error: SendError<Message>) -> Self {
+      ServerError {code: 2, message: error.to_string(), kind: ErrorKind::Sync}
     }
 }
 

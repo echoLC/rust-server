@@ -20,7 +20,7 @@ fn main() {
                 Err(error) => print!("Server error {}", error.message),
                 _ => ()
             };
-        })
+        });
     }
 
     println!("Shutting down.");

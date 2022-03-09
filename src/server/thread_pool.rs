@@ -4,6 +4,7 @@ use std::sync::Mutex;
 
 use crate::server::worker::{Worker};
 use crate::server::message::{Message};
+use crate::server::error::{ServerError};
 
 pub struct ThreadPool {
   workers: Vec<Worker>,
@@ -25,12 +26,13 @@ impl ThreadPool {
       ThreadPool{ workers, sender }
     }
 
-    pub fn execute<F>(&self, f: F)
+    pub fn execute<F>(&self, f: F) -> Result<(), ServerError>
       where 
         F: FnOnce() + Send + 'static
         {
           let job = Box::new(f);
-          self.sender.send(Message::NewJob(job)).unwrap();
+          self.sender.send(Message::NewJob(job))?;
+          Ok(())
         } 
 }
 
